@@ -1,36 +1,186 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🩺 Calculadora de Faturamento MedGM
 
-## Getting Started
+Calculadora interativa para médicos projetarem e otimizarem o faturamento de seus consultórios, desenvolvida seguindo a identidade visual da MedGM.
 
-First, run the development server:
+## 🎯 Sobre o Projeto
+
+Esta ferramenta ajuda médicos a:
+- **Simular cenários** de faturamento em tempo real
+- **Identificar oportunidades** de crescimento através de duas alavancas principais:
+  - Mix particular/convênio
+  - Taxa de conversão da recepção
+- **Visualizar o gap** entre faturamento atual e potencial otimizado
+- **Tomar decisões** baseadas em dados sobre captação e conversão
+
+## 🚀 Tecnologias
+
+- **Next.js 14** (App Router)
+- **TypeScript**
+- **Tailwind CSS v4**
+- **Framer Motion** (animações)
+- **Zustand** (gerenciamento de estado)
+- **Lucide React** (ícones)
+
+## 🎨 Identidade Visual
+
+Segue fielmente a identidade visual MedGM:
+
+**Cores:**
+- `#F5F5F5` (Clean) - Background principal
+- `#D6B991` (Gold) - Elementos de destaque
+- `#2B2B2B` (Dark Gray) - Cards escuros
+- `#151515` (Black) - Textos principais
+
+**Tipografia:**
+- Inter (fallback do Gilroy, mantendo a elegância)
+
+## 📁 Estrutura do Projeto
+
+```
+calculadora-medgm/
+├── app/
+│   ├── page.tsx              # Etapa 2: Sliders interativos
+│   ├── resultado/
+│   │   └── page.tsx          # Etapa 3: Análise e gap anualizado
+│   ├── layout.tsx
+│   └── globals.css
+├── components/
+│   ├── SliderCard.tsx        # Slider customizado com animação
+│   └── FaturamentoDisplay.tsx # Box de faturamento (lado direito)
+├── lib/
+│   ├── store.ts              # Zustand store + cálculos
+│   └── utils.ts              # Helpers
+└── README.md
+```
+
+## 🔧 Como Usar
+
+### 1. Instalar dependências
+
+```bash
+npm install
+```
+
+### 2. Rodar em desenvolvimento
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Acesse: [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3. Build de produção
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+npm start
+```
 
-## Learn More
+## 🎮 Fluxo de Uso
 
-To learn more about Next.js, take a look at the following resources:
+### Etapa 2: Diagnóstico Duplo (/)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+O médico ajusta 6 sliders que impactam o faturamento:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. **Mix Particular/Convênio** - Percentual de consultas particulares
+2. **Conversão da Recepção** - Taxa de ligações que viram consulta
+3. **Dias Úteis no Mês** - Quantos dias atende
+4. **Consultas por Dia** - Meta diária de atendimentos
+5. **Ticket Particular** - Valor médio da consulta particular
+6. **Ticket Convênio** - Valor médio do convênio
 
-## Deploy on Vercel
+**Resultado em tempo real:**
+- Faturamento mensal projetado
+- Número de consultas
+- Ticket médio
+- Ligações necessárias
+- ROI anualizado
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Etapa 3: Resultado que Dói (/resultado)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Mostra:
+- **Gap anualizado** - Quanto está deixando na mesa
+- **Comparativo** entre cenário atual e otimizado
+- **Insights personalizados** - Qual alavanca tem mais impacto
+- **CTA contextual:**
+  - **Standalone:** "Agende diagnóstico gratuito"
+  - **Order Bump (Protocolo):** "Quero atacar a captação também"
+
+## 🧮 Fórmulas de Cálculo
+
+### Consultas Mensais
+```typescript
+consultasMes = diasUteisMes × consultasPorDia
+```
+
+### Faturamento Mensal
+```typescript
+consultasParticular = consultasMes × mixParticular
+consultasConvenio = consultasMes × (1 - mixParticular)
+faturamento = (consultasParticular × ticketParticular) + (consultasConvenio × ticketConvenio)
+```
+
+### Gap Anualizado
+```typescript
+gapMensal = faturamentoOtimizado - faturamentoAtual
+gapAnual = gapMensal × 12
+```
+
+### Ligações Necessárias
+```typescript
+ligacoes = Math.ceil(consultasMes / conversaoRecepcao)
+```
+
+## 🎯 Próximos Passos (Fase 2)
+
+- [ ] Integração com GoHighLevel (captura de leads)
+- [ ] Query params para contexto (`?contexto=order_bump`)
+- [ ] Comparativo com benchmark de mercado
+- [ ] Exportar PDF do diagnóstico
+- [ ] Salvar cenários (localStorage)
+- [ ] Analytics (PostHog/Vercel Analytics)
+- [ ] Modo dark
+- [ ] Responsividade mobile otimizada
+
+## 📊 Métricas Rastreadas (Futuro)
+
+```javascript
+{
+  faturamento_atual: number,
+  faturamento_otimizado: number,
+  gap_anual: number,
+  mix_atual: number,
+  conversao_atual: number,
+  origem: "standalone" | "order_bump_protocolo",
+  especialidade: string
+}
+```
+
+## 🚢 Deploy
+
+### Vercel (Recomendado)
+
+```bash
+npm install -g vercel
+vercel
+```
+
+### Outras opções
+- Netlify
+- Railway
+- Docker
+
+## 📝 Notas de Desenvolvimento
+
+- **Tailwind CSS v4** usa sintaxe CSS-first com `@theme inline`
+- **Zustand** é mais leve que Redux para este caso de uso
+- **Framer Motion** adiciona 30kb mas melhora significativamente a UX
+- **Sliders customizados** para manter identidade visual MedGM
+
+## 📄 Licença
+
+Projeto proprietário da MedGM.
+
+---
+
+**Desenvolvido com ❤️ para médicos que querem crescer de forma estruturada**
