@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getUserByEmail, addAuthorizedUser } from '@/lib/auth/storage';
 import { SignJWT } from 'jose';
 
 const JWT_SECRET = new TextEncoder().encode(
@@ -17,26 +16,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Valida email básico
+    // Valida formato de email básico
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return NextResponse.json(
-        { error: 'Email inválido' },
+        { error: 'Digite um email válido' },
         { status: 400 }
       );
     }
 
-    // Adiciona automaticamente se não existir
-    let user = getUserByEmail(email);
-    if (!user) {
-      user = addAuthorizedUser(email, {
-        source: 'auto_login',
-        timestamp: new Date().toISOString(),
-      });
-    }
+    // Aceita QUALQUER email válido (sem verificação de banco/arquivo)
 
     // Cria JWT token
-    const token = await new SignJWT({ email: user.email })
+    const token = await new SignJWT({ email: email.toLowerCase() })
       .setProtectedHeader({ alg: 'HS256' })
       .setExpirationTime('30d') // Token válido por 30 dias
       .setIssuedAt()
@@ -47,7 +39,7 @@ export async function POST(request: NextRequest) {
       success: true,
       message: 'Login realizado com sucesso',
       user: {
-        email: user.email,
+        email: email.toLowerCase(),
       },
     });
 

@@ -67,7 +67,7 @@ function LoginForm() {
             </div>
             <h1 className="text-2xl font-bold text-center">Acesso à Calculadora</h1>
             <p className="text-sm text-gray-300 text-center mt-2">
-              Digite seu email para acessar
+              Use o mesmo email cadastrado na compra
             </p>
           </div>
 
